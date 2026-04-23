@@ -7,4 +7,5 @@ module.exports = {
   NODE_ENV: process.env.NODE_ENV,
   REDIS_HOST: process.env.REDIS_HOST,
   REDIS_PORT: process.env.REDIS_PORT,
+  PROBLEM_ADMIN_SERVICE: process.env.PROBLEM_ADMIN_SERVICE,
 };

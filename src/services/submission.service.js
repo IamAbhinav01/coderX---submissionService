@@ -1,3 +1,7 @@
+const { fetchProblemDetails } = require('../api/problemAdmin.api');
+const SubmissionCreationError = require('../errors/submissionCreation.err');
+const submissionProducer = require('../producers/submission.producer');
+
 class SubmissionService {
   constructor(submissionRepository) {
     this.submissionRepository = submissionRepository;
@@ -6,6 +10,36 @@ class SubmissionService {
     const problemID = submissionPayload.problemID;
     console.log('Submission ProblemID : ', problemID);
 
+    const problemAdminResponse = await fetchProblemDetails(problemID);
+
+    if (!problemAdminResponse || !problemAdminResponse.success) {
+      throw new SubmissionCreationError(
+        'Failed to fetch problem details from Problem Admin Service'
+      );
+    }
+    console.log('problemAdminService: ', problemAdminResponse);
+
+    const codeStubs = problemAdminResponse.data.codeStubs || [];
+    const languageCodeStub = codeStubs.find(
+      (stub) =>
+        stub.language.toLowerCase() === submissionPayload.language.toLowerCase()
+    );
+
+    console.log('Found codeStub: ', languageCodeStub);
+
+    if (!languageCodeStub) {
+      throw new SubmissionCreationError(
+        `No code stub found for language: ${submissionPayload.language}`
+      );
+    }
+
+    submissionPayload.code =
+      languageCodeStub.startSnippet +
+      '\n\n' +
+      submissionPayload.code +
+      '\n\n' +
+      languageCodeStub.endSnippet;
+
     const submission =
       await this.submissionRepository.createSubmission(submissionPayload);
 
@@ -13,7 +47,19 @@ class SubmissionService {
       throw new Error('Submission creation failed');
     }
     console.log('submission Payload : ', submission);
-    return submission;
+
+    const { userID } = submissionPayload;
+    const response = await submissionProducer({
+      [submission._id]: {
+        code: submission.code,
+        language: submission.language,
+        inputCase: problemAdminResponse.data.testCases[0].input,
+        outputCase: problemAdminResponse.data.testCases[0].output,
+        userId: userID,
+        submissionId: submission._id,
+      },
+    });
+    return { queueresponse: response, submission };
   }
 }
 module.exports = SubmissionService;
