@@ -7,6 +7,7 @@ async function createSubmission(request, response) {
   //   const response = await this.SubmissionService.addSubmission(request.body);
   try {
     const validated_response = createSubmissionZodSchema.parse(request.body);
+    console.log(validated_response);
     response.status(201).send({
       error: {},
       message: 'Submission created successfully',

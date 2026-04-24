@@ -1,6 +1,6 @@
 const { z } = require('zod');
 
-export const createSubmissionZodSchema = z
+const createSubmissionZodSchema = z
   .object({
     userId: z.string(),
     problemId: z.string(),
