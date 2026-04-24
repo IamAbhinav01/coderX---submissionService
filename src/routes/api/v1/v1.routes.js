@@ -1,4 +1,4 @@
 async function v1Plugin(fastify, options) {
-  fastify.register(require('./ping.routes'), { prefix: '/ping' });
+  fastify.register(require('./submission.routes'), { prefix: '/submissions' });
 }
 module.exports = v1Plugin;
