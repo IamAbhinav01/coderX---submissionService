@@ -1,18 +1,19 @@
 const { fetchProblemDetails } = require('../api/problemAdmin.api');
 const SubmissionCreationError = require('../errors/submissionCreation.err');
 const submissionProducer = require('../producers/submission.producer');
+const SubmissionRepository = require('../repositories/submission.repository');
 
 class SubmissionService {
-  constructor(submissionRepository) {
-    this.submissionRepository = submissionRepository;
+  constructor() {
+    this.submissionRepository = new SubmissionRepository();
   }
   async addSubmission(submissionPayload) {
-    const problemID = submissionPayload.problemID;
+    const problemID = submissionPayload.problemId;
     console.log('Submission ProblemID : ', problemID);
 
     const problemAdminResponse = await fetchProblemDetails(problemID);
 
-    if (!problemAdminResponse || !problemAdminResponse.success) {
+    if (!problemAdminResponse || !problemAdminResponse.Success) {
       throw new SubmissionCreationError(
         'Failed to fetch problem details from Problem Admin Service'
       );
@@ -48,14 +49,14 @@ class SubmissionService {
     }
     console.log('submission Payload : ', submission);
 
-    const { userID } = submissionPayload;
+    const { userId } = submissionPayload;
     const response = await submissionProducer({
       [submission._id]: {
         code: submission.code,
         language: submission.language,
         inputCase: problemAdminResponse.data.testCases[0].input,
         outputCase: problemAdminResponse.data.testCases[0].output,
-        userId: userID,
+        userId: userId,
         submissionId: submission._id,
       },
     });
