@@ -5,13 +5,17 @@ const {
 
 async function createSubmission(request, response) {
   //   const response = await this.SubmissionService.addSubmission(request.body);
+
   try {
+    const submissionService = new SubmissionService();
     const validated_response = createSubmissionZodSchema.parse(request.body);
+    const serviceResponse =
+      await submissionService.addSubmission(validated_response);
     console.log(validated_response);
     response.status(201).send({
       error: {},
       message: 'Submission created successfully',
-      data: validated_response,
+      data: serviceResponse,
       success: true,
     });
   } catch (error) {
