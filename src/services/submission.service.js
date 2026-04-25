@@ -20,7 +20,7 @@ class SubmissionService {
     }
     console.log('problemAdminService: ', problemAdminResponse);
 
-    const codeStubs = problemAdminResponse.data.codeStubs || [];
+    const codeStubs = problemAdminResponse.data.codeSnippets || [];
     const languageCodeStub = codeStubs.find(
       (stub) =>
         stub.language.toLowerCase() === submissionPayload.language.toLowerCase()
@@ -36,9 +36,9 @@ class SubmissionService {
 
     submissionPayload.code =
       languageCodeStub.startSnippet +
-      '\n\n' +
+      '\n' +
       submissionPayload.code +
-      '\n\n' +
+      '\n' +
       languageCodeStub.endSnippet;
 
     const submission =
