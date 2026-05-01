@@ -1,6 +1,8 @@
-const { fa } = require('zod/locales');
-const createSubmission = require('../../../controllers/submission.controller');
+const { createSubmission, getUserSubmissions } = require('../../../controllers/submission.controller');
+
 async function submissionRoutes(fastify, options) {
   fastify.post('/', createSubmission);
+  fastify.get('/user/:userId', getUserSubmissions);
 }
+
 module.exports = submissionRoutes;

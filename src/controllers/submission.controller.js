@@ -3,11 +3,10 @@ const {
   createSubmissionZodSchema,
 } = require('../validators/submission.validator');
 
-async function createSubmission(request, response) {
-  //   const response = await this.SubmissionService.addSubmission(request.body);
+const submissionService = new SubmissionService();
 
+async function createSubmission(request, response) {
   try {
-    const submissionService = new SubmissionService();
     const validated_response = createSubmissionZodSchema.parse(request.body);
     const serviceResponse =
       await submissionService.addSubmission(validated_response);
@@ -28,4 +27,29 @@ async function createSubmission(request, response) {
     });
   }
 }
-module.exports = createSubmission;
+
+async function getUserSubmissions(request, response) {
+  try {
+    const { userId } = request.params;
+    const submissions = await submissionService.getUserSubmissions(userId);
+    response.status(200).send({
+      error: {},
+      message: 'Submissions fetched successfully',
+      data: submissions,
+      success: true,
+    });
+  } catch (error) {
+    console.log(error);
+    response.status(500).send({
+      error: error,
+      message: 'Failed to fetch submissions',
+      data: null,
+      success: false,
+    });
+  }
+}
+
+module.exports = {
+  createSubmission,
+  getUserSubmissions
+};

@@ -22,6 +22,6 @@ const submissionSchema = new mongoose.Schema({
     enum: ['Pending', 'Success', 'RE', 'TLE', 'MLE', 'WA'],
     default: 'Pending',
   },
-});
+}, { timestamps: true });
 const Submission = mongoose.mongoose.model('Submission', submissionSchema);
 module.exports = Submission;

@@ -61,5 +61,9 @@ class SubmissionService {
     });
     return { queueresponse: response, submission };
   }
+  async getUserSubmissions(userId) {
+    const submissions = await this.submissionRepository.getSubmissions(userId);
+    return submissions;
+  }
 }
 module.exports = SubmissionService;
