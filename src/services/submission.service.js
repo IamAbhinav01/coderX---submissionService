@@ -54,8 +54,7 @@ class SubmissionService {
       [submission._id]: {
         code: submission.code,
         language: submission.language,
-        inputCase: problemAdminResponse.data.testCases[0].input,
-        outputCase: problemAdminResponse.data.testCases[0].output,
+        testCases: problemAdminResponse.data.testCases,
         userId: userId,
         submissionId: submission._id,
       },
