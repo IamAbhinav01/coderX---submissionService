@@ -2,6 +2,10 @@ const fastify = require('fastify')({ logger: true });
 const app = require('./app');
 const serverConfig = require('./config/server.config');
 const connectToDB = require('./config/db.config');
+const evaluationWorker = require('./workers/evaluation.worker');
+
+evaluationWorker('EvaluationQueue');
+
 fastify.register(app);
 
 fastify.listen({ port: serverConfig.PORT }, async (err, address) => {
