@@ -34,12 +34,9 @@ class SubmissionService {
       );
     }
 
-    submissionPayload.code =
-      languageCodeStub.startSnippet +
-      '\n' +
-      submissionPayload.code +
-      '\n' +
-      languageCodeStub.endSnippet;
+    // The frontend sends the complete code (start + user logic + end) as typed
+    // in the editor. No server-side wrapping needed.
+    // submissionPayload.code is already the full runnable program.
 
     const submission =
       await this.submissionRepository.createSubmission(submissionPayload);
